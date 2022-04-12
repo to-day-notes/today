@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :today, Today.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "today_dev",
+    username: System.get_env("POSTGRES_USER", "postgres"),
+    password: System.get_env("POSTGRES_PASSWORD", "postgres"),
+    hostname: System.get_env("DATABASE_URL", "localhost"),
+    database: System.get_env("POSTGRES_DB", "today_dev"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
