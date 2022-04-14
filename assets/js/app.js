@@ -22,11 +22,16 @@ import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
+let Hooks = {};
+import { EditorHook } from "./hooks";
+Hooks.EditorHook = EditorHook
+
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
+  hooks: Hooks,
 });
 
 // Show progress bar on live navigation and form submits
@@ -42,28 +47,3 @@ liveSocket.connect();
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
-
-import { Editor } from "@tiptap/core";
-import StarterKit from "@tiptap/starter-kit";
-import Collaboration from "@tiptap/extension-collaboration";
-import { HocuspocusProvider } from "@hocuspocus/provider";
-
-// Set up the Hocuspocus WebSocket provider
-const provider = new HocuspocusProvider({
-  url: "ws://127.0.0.1:1234",
-  name: "example-document",
-});
-
-const editor = new Editor({
-  element: document.querySelector("#editor"),
-  extensions: [
-    StarterKit.configure({
-      // The Collaboration extension comes with its own history handling
-      history: false,
-    }),
-    // Register the document with Tiptap
-    Collaboration.configure({
-      document: provider.document,
-    }),
-  ],
-});

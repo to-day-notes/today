@@ -18,6 +18,7 @@ defmodule TodayWeb.Router do
   scope "/", TodayWeb do
     pipe_through :browser
 
+    live "/editor", EditorLive
     get "/", PageController, :index
   end
 
