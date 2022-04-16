@@ -23,8 +23,11 @@ import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
 let Hooks = {};
-import { ProsemirrorHook } from "./prosemirror/prosemirror_hook"
-Hooks.ProsemirrorHook = ProsemirrorHook
+import { ProsemirrorHook } from "./prosemirror/prosemirror_hook";
+import { TiptapHook } from "./tiptap/tiptap_hook";
+
+Hooks.ProsemirrorHook = ProsemirrorHook;
+Hooks.TiptapHook = TiptapHook;
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")

@@ -19,6 +19,7 @@ defmodule TodayWeb.Router do
     pipe_through :browser
 
     live "/prosemirror", ProsemirrorLive
+    live "/tiptap", TiptapLive
     get "/", PageController, :index
   end
 
