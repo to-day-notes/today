@@ -3,7 +3,10 @@ defmodule TodayWeb.TiptapLive do
 
   def render(assigns) do
     ~H"""
-    <div phx-hook="TiptapHook" id="editor"></div>
+    <div phx-hook="TiptapHook" id="editors">
+      <div id="editor"></div>
+      <div id="editor1"></div>
+    </div>
     """
   end
 end
