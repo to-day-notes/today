@@ -1,4 +1,4 @@
-let EditorHook = {
+let ProsemirrorHook = {
   async mounted() {
     // Mix the nodes from prosemirror-schema-list into the basic schema to
     // create a schema with list support.
@@ -6,7 +6,7 @@ let EditorHook = {
     let schema = await import("prosemirror-schema-basic");
     let schemaList = await import("prosemirror-schema-list");
     let authority = await import("./authority");
-    let editor = await import("./editor");
+    let editor = await import("./prosemirror");
     const mySchema = new model.Schema({
       nodes: schemaList.addListNodes(
         schema.schema.spec.nodes,
@@ -39,4 +39,4 @@ let EditorHook = {
   },
 };
 
-export { EditorHook };
+export { ProsemirrorHook };

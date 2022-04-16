@@ -23,8 +23,8 @@ import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
 let Hooks = {};
-import { EditorHook } from "./hooks";
-Hooks.EditorHook = EditorHook
+import { ProsemirrorHook } from "./prosemirror/prosemirror_hook"
+Hooks.ProsemirrorHook = ProsemirrorHook
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
