@@ -25,9 +25,11 @@ import topbar from "../vendor/topbar";
 let Hooks = {};
 import { ProsemirrorHook } from "./prosemirror/prosemirror_hook";
 import { TiptapHook } from "./tiptap/tiptap_hook";
+import { QuillHook } from "./quill/quill_hook";
 
 Hooks.ProsemirrorHook = ProsemirrorHook;
 Hooks.TiptapHook = TiptapHook;
+Hooks.QuillHook = QuillHook;
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
