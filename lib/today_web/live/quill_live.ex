@@ -3,7 +3,7 @@ defmodule TodayWeb.QuillLive do
 
   def render(assigns) do
     ~H"""
-    <div phx-hook="QuillHook" id="editor"> </div>
+    <div phx-hook="QuillHook" id="editor"></div>
     """
   end
 end

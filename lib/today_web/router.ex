@@ -21,6 +21,7 @@ defmodule TodayWeb.Router do
     live "/prosemirror", ProsemirrorLive
     live "/tiptap", TiptapLive
     live "/quill", QuillLive
+    live "/milkdown", MilkdownLive
     get "/", PageController, :index
   end
 

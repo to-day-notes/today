@@ -26,10 +26,12 @@ let Hooks = {};
 import { ProsemirrorHook } from "./prosemirror/prosemirror_hook";
 import { TiptapHook } from "./tiptap/tiptap_hook";
 import { QuillHook } from "./quill/quill_hook";
+import { MilkdownHook } from "./milkdown/milkdown_hook";
 
 Hooks.ProsemirrorHook = ProsemirrorHook;
 Hooks.TiptapHook = TiptapHook;
 Hooks.QuillHook = QuillHook;
+Hooks.MilkdownHook = MilkdownHook;
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")

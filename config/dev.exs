@@ -10,7 +10,7 @@ if System.get_env("PGSOCKET") == nil do
     show_sensitive_data_on_connection_error: true,
     pool_size: 10
 else
-    config :today, Today.Repo,
+  config :today, Today.Repo,
     username: System.get_env("POSTGRES_USER", "postgres"),
     password: System.get_env("POSTGRES_PASSWORD", "postgres"),
     # hostname: System.get_env("DATABASE_URL", "localhost"),
