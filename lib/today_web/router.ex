@@ -18,7 +18,8 @@ defmodule TodayWeb.Router do
   scope "/", TodayWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/:slug", EditorLive, :index
+    live "/", EditorLive, :index
   end
 
   # Other scopes may use custom stacks.

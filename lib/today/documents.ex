@@ -19,7 +19,7 @@ defmodule Today.Documents do
 
   """
   def list_documents do
-    Repo.all(Document)
+    Repo.all(from(d in Document, order_by: [{:desc, d.inserted_at}]))
   end
 
   @doc """
@@ -52,7 +52,7 @@ defmodule Today.Documents do
   """
   def create_document(name, body \\ nil) do
     %Document{name: name, body: body}
-    |> Repo.insert()
+    |> Repo.insert!()
   end
 
   @doc """
@@ -70,7 +70,7 @@ defmodule Today.Documents do
   def update_document(%Document{} = document, attrs) do
     document
     |> Changeset.change(attrs)
-    |> Repo.update()
+    |> Repo.update!()
   end
 
   @doc """

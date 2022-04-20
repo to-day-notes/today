@@ -38,7 +38,6 @@ let EditorHook = {
         },
       },
       autofocus: true,
-      // injectCSS: false,
     });
     const saveButton = document.getElementById("save-document");
     saveButton.onclick = () => {
@@ -49,9 +48,7 @@ let EditorHook = {
           body: this.editor.getJSON(),
         });
       } else {
-        const documentID = document.getElementById("document-id").value;
         this.pushEventTo("#document-form", "save_document", {
-          document: documentID,
           body: this.editor.getJSON(),
         });
       }
@@ -74,8 +71,18 @@ let liveSocket = new LiveSocket("/live", Socket, {
 
 // Show progress bar on live navigation and form submits
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
-window.addEventListener("phx:page-loading-start", (info) => topbar.show());
-window.addEventListener("phx:page-loading-stop", (info) => topbar.hide());
+let topBarScheduled = undefined;
+
+window.addEventListener("phx:page-loading-start", (info) => {
+  if (!topBarScheduled) {
+    topBarScheduled = setTimeout(() => topbar.show(), 200);
+  }
+});
+window.addEventListener("phx:page-loading-stop", (info) => {
+  clearTimeout(topBarScheduled);
+  topBarScheduled = undefined;
+  topbar.hide();
+});
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();
