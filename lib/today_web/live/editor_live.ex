@@ -1,9 +1,10 @@
 defmodule TodayWeb.EditorLive do
   use TodayWeb, :live_view
-  alias Phoenix.LiveView.JS
+  alias Phoenix.PubSub
   alias Today.Documents
   alias Today.Helpers
 
+  @impl true
   def mount(_params, _uri, socket) do
     socket =
       socket
@@ -13,15 +14,31 @@ defmodule TodayWeb.EditorLive do
     {:ok, socket}
   end
 
+  @impl true
   def handle_params(%{"slug" => slug}, _uri, socket) do
     [id | _] = String.split(slug, "-")
-    {:noreply, assign(socket, :current_document, Documents.get_document!(id))}
+
+    if connected?(socket) do
+      PubSub.subscribe(Today.PubSub, "document#{id}")
+
+      if socket.assigns[:current_document] do
+        PubSub.unsubscribe(Today.PubSub, "document#{socket.assigns.current_document.id}")
+      end
+    end
+
+    socket =
+      socket
+      |> assign(:current_document, Documents.get_document!(id))
+      |> assign(:user, Helpers.generate_name())
+
+    {:noreply, socket}
   end
 
   def handle_params(_params, _uri, socket) do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_event("create_document", params, socket) do
     document = Documents.create_document(params["new_document_name"], params["body"])
 
@@ -38,6 +55,27 @@ defmodule TodayWeb.EditorLive do
     {:noreply, socket}
   end
 
+  def handle_event("editor_changed", %{} = params, socket) do
+    PubSub.broadcast(
+      Today.PubSub,
+      "document#{socket.assigns.current_document.id}",
+      {:editor_changed, params, socket.assigns.user}
+    )
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:editor_changed, data, origin}, socket) do
+    user = socket.assigns.user
+
+    case origin do
+      ^user -> {:noreply, socket}
+      _ -> {:noreply, push_event(socket, "editor_changed", data)}
+    end
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="container flex p-2">
@@ -104,7 +142,7 @@ defmodule TodayWeb.EditorLive do
             </svg>
           </button>
         </div>
-        <div id="editor" class="h-screen" phx-update="ignore"></div>
+        <div id="editor" class="min-h-screen" phx-update="ignore"></div>
         <%= if @current_document do %>
           <input type="hidden" id="document-content" value={Jason.encode!(@current_document.body)} />
         <% end %>

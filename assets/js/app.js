@@ -24,14 +24,39 @@ import topbar from "../vendor/topbar";
 
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
+import { Collaboration } from "@tiptap/extension-collaboration";
+import * as Y from "yjs";
 
 let hooks = {};
 
 let EditorHook = {
   mounted() {
+    this.ydoc = new Y.Doc();
+
+    this.ydoc.on("update", (update, _origin) => {
+      let base64 = btoa(String.fromCharCode.apply(null, update));
+      this.pushEvent("editor_changed", { update: base64 });
+    });
+
+    this.handleEvent("editor_changed", (data) => {
+      let update = new Uint8Array(
+        atob(data.update)
+          .split("")
+          .map((char) => char.charCodeAt(0))
+      );
+      Y.applyUpdate(this.ydoc, update, this);
+    });
+
     this.editor = new Editor({
       element: document.querySelector("#editor"),
-      extensions: [StarterKit],
+      extensions: [
+        StarterKit.configure({
+          history: false,
+        }),
+        Collaboration.configure({
+          document: this.ydoc,
+        }),
+      ],
       editorProps: {
         attributes: {
           class: "focus:outline-none h-full border border-gray-500 rounded p-2",
@@ -39,7 +64,11 @@ let EditorHook = {
       },
       autofocus: true,
     });
+
+    this.setContent();
+
     const saveButton = document.getElementById("save-document");
+
     saveButton.onclick = () => {
       const documentName = document.getElementById("document-name");
       if (documentName && documentName.value) {
@@ -55,8 +84,13 @@ let EditorHook = {
     };
   },
   updated() {
-    const documentContent = document.getElementById("document-content").value;
-    this.editor.commands.setContent(JSON.parse(documentContent));
+    this.setContent();
+  },
+  setContent() {
+    const documentContent = document.getElementById("document-content");
+    if (documentContent) {
+      this.editor.commands.setContent(JSON.parse(documentContent.value));
+    }
   },
 };
 
